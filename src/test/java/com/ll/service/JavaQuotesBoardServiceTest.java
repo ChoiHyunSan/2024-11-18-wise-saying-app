@@ -18,11 +18,11 @@ class JavaQuotesBoardServiceTest {
     void before(){
         Quote quote3 = new Quote();
         quote3.setAuthor("작가3");
-        quote3.setWiseSaying("명언3");
+        quote3.setContent("명언3");
 
         Quote quote4 = new Quote();
         quote4.setAuthor("작가4");
-        quote4.setWiseSaying("명언4");
+        quote4.setContent("명언4");
 
         long id1 = quoteRepository.addQuote(quote3);
         long id2 = quoteRepository.addQuote(quote4);

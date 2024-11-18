@@ -12,11 +12,11 @@ public class QuoteRepositoryTest {
     void before(){
         Quote quote3 = new Quote();
         quote3.setAuthor("작가3");
-        quote3.setWiseSaying("명언3");
+        quote3.setContent("명언3");
 
         Quote quote4 = new Quote();
         quote4.setAuthor("작가4");
-        quote4.setWiseSaying("명언4");
+        quote4.setContent("명언4");
 
         long id1 = quoteRepository.addQuote(quote3);
         long id2 = quoteRepository.addQuote(quote4);
@@ -26,11 +26,11 @@ public class QuoteRepositoryTest {
     void 명언_추가하고_조회하기_약식테스트(){
         Quote quote1 = new Quote();
         quote1.setAuthor("작가1");
-        quote1.setWiseSaying("명언1");
+        quote1.setContent("명언1");
 
         Quote quote2 = new Quote();
         quote2.setAuthor("작가2");
-        quote2.setWiseSaying("명언2");
+        quote2.setContent("명언2");
 
         long id1 = quoteRepository.addQuote(quote1);
         long id2 = quoteRepository.addQuote(quote2);
@@ -43,8 +43,8 @@ public class QuoteRepositoryTest {
         Assertions.assertEquals(quote2, findQuote2);
         Assertions.assertEquals("작가1", findQuote1.getAuthor());
         Assertions.assertEquals("작가2", findQuote2.getAuthor());
-        Assertions.assertEquals("명언1", findQuote1.getWiseSaying());
-        Assertions.assertEquals("명언2", findQuote2.getWiseSaying());
+        Assertions.assertEquals("명언1", findQuote1.getContent());
+        Assertions.assertEquals("명언2", findQuote2.getContent());
     }
 
     @Test

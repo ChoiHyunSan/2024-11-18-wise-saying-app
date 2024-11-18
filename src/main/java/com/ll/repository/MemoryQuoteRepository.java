@@ -37,7 +37,7 @@ public class MemoryQuoteRepository implements QuoteRepository{
     @Override
     public Optional<Quote> searchByWiseSaying(String piece) {
         return quoteMap.values().stream()
-                .filter(quote -> quote.getWiseSaying().contains(piece))
+                .filter(quote -> quote.getContent().contains(piece))
                 .findFirst();
     }
 
@@ -48,5 +48,13 @@ public class MemoryQuoteRepository implements QuoteRepository{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void updateQuote(Quote quote) {
+        if(quoteMap.get(quote.getId()) == null)
+            return;
+
+        quoteMap.put(quote.getId(), quote);
     }
 }

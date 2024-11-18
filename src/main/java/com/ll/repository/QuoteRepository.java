@@ -14,4 +14,5 @@ public interface QuoteRepository {
     List<Quote> findAll();
 
     boolean removeQuote(long quoteId);
+    void updateQuote(Quote quote);
 }

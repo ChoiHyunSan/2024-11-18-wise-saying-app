@@ -4,6 +4,7 @@ import com.ll.domain.Quote;
 import com.ll.repository.MemoryQuoteRepository;
 import com.ll.repository.QuoteRepository;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class JavaQuotesBoardService {
@@ -12,6 +13,7 @@ public class JavaQuotesBoardService {
     private static final String CMD_INSERT  = "등록";
     private static final String CMD_LIST    = "목록";
     private static final String CMD_DELETE  = "삭제";
+    private static final String CMD_UPDATE  = "수정";
 
     private QuoteRepository repository;
     private Scanner sc = new Scanner(System.in);
@@ -47,6 +49,8 @@ public class JavaQuotesBoardService {
             printQuoteList();
         }else if(command.startsWith(CMD_DELETE)){
             deleteQuote(command);
+        }else if(command.startsWith(CMD_UPDATE)){
+            UpdateQuote(command);
         }
 
         return true;
@@ -56,14 +60,14 @@ public class JavaQuotesBoardService {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("------------------");
         repository.findAll().forEach(quote ->
-                        System.out.println(quote.getId() + " / " + quote.getAuthor() + " / " + quote.getWiseSaying()));
+                        System.out.println(quote.getId() + " / " + quote.getAuthor() + " / " + quote.getContent()));
     }
 
     private void InsertQuote(){
         Quote quote = new Quote();
 
         System.out.print("명언 : ");
-        quote.setWiseSaying(sc.nextLine());
+        quote.setContent(sc.nextLine());
         System.out.print("작가 : ");
         quote.setAuthor(sc.nextLine());
 
@@ -83,5 +87,29 @@ public class JavaQuotesBoardService {
         }else{
             System.out.println(deleteId + "번 명언은 존재하지 않습니다.");
         }
+    }
+
+    public void UpdateQuote(String command){
+
+        // TODO : command -> Param Map 으로 변환하는 메서드 추가하기
+        int boundaryIndex = command.indexOf("?");
+        String param = command.substring(boundaryIndex);
+        long updateId = Long.parseLong(param.split("=")[1]);
+
+        Optional<Quote> quoteOptional = repository.searchById(updateId);
+        if(quoteOptional.isEmpty()){
+            System.out.println(updateId + "번 명언은 존재하지 않습니다.");
+        }
+
+        Quote updateQuote = quoteOptional.get();
+        System.out.println("명언(기존) : " + updateQuote.getContent());
+        System.out.print("명언 : ");
+        updateQuote.setContent(sc.nextLine());
+
+        System.out.println("작가(기존) : " + updateQuote.getContent());
+        System.out.print("작가 : ");
+        updateQuote.setAuthor(sc.nextLine());
+
+        repository.updateQuote(updateQuote);
     }
 }

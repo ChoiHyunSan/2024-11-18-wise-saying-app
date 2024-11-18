@@ -3,7 +3,7 @@ package com.ll.domain;
 public class Quote {
 
     private Long id;
-    private String wiseSaying;
+    private String content;
     private String author;
 
     public Long getId() {
@@ -14,12 +14,12 @@ public class Quote {
         this.id = id;
     }
 
-    public String getWiseSaying() {
-        return wiseSaying;
+    public String getContent() {
+        return content;
     }
 
-    public void setWiseSaying(String wiseSaying) {
-        this.wiseSaying = wiseSaying;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getAuthor() {
