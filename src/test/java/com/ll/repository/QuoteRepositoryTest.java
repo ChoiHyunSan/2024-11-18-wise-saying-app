@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class QuoteRepositoryTest {
-    QuoteRepository quoteRepository = new MemoryQuoteRepository();
+    QuoteRepository quoteRepository = new JsonQuoteRepository();
 
     @BeforeEach
     void before(){

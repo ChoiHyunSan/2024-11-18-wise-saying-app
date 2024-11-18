@@ -1,7 +1,7 @@
 package com.ll.service;
 
 import com.ll.domain.Quote;
-import com.ll.repository.MemoryQuoteRepository;
+import com.ll.repository.JsonQuoteRepository;
 import com.ll.repository.QuoteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 class JavaQuotesBoardServiceTest {
 
-    QuoteRepository quoteRepository = new MemoryQuoteRepository();
+    QuoteRepository quoteRepository = new JsonQuoteRepository();
     JavaQuotesBoardService service;
 
     @BeforeEach

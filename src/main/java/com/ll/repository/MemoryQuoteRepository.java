@@ -28,20 +28,6 @@ public class MemoryQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public Optional<Quote> searchByAuthor(String author) {
-        return quoteMap.values().stream()
-                .filter(quote -> quote.getAuthor().equals(author))
-                .findFirst();
-    }
-
-    @Override
-    public Optional<Quote> searchByWiseSaying(String piece) {
-        return quoteMap.values().stream()
-                .filter(quote -> quote.getContent().contains(piece))
-                .findFirst();
-    }
-
-    @Override
     public boolean removeQuote(long quoteId) {
         if(quoteMap.get(quoteId) != null){
             quoteMap.remove(quoteId);

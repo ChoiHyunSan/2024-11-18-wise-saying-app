@@ -8,8 +8,6 @@ import java.util.Optional;
 public interface QuoteRepository {
     long addQuote(Quote quote);
 
-    Optional<Quote> searchByAuthor(String author);
-    Optional<Quote> searchByWiseSaying(String piece);
     Optional<Quote> searchById(long id);
     List<Quote> findAll();
 

@@ -1,5 +1,7 @@
 package com.ll.domain;
 
+import java.util.Objects;
+
 public class Quote {
 
     private Long id;
@@ -28,5 +30,18 @@ public class Quote {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Quote quote = (Quote) o;
+        return Objects.equals(getId(), quote.getId()) && Objects.equals(getContent(), quote.getContent()) && Objects.equals(getAuthor(), quote.getAuthor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getContent(), getAuthor());
     }
 }
