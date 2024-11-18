@@ -42,7 +42,11 @@ public class MemoryQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public void removeQuote(Quote quote) {
-
+    public boolean removeQuote(long quoteId) {
+        if(quoteMap.get(quoteId) != null){
+            quoteMap.remove(quoteId);
+            return true;
+        }
+        return false;
     }
 }

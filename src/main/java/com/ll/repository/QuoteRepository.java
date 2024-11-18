@@ -13,5 +13,5 @@ public interface QuoteRepository {
     Optional<Quote> searchById(long id);
     List<Quote> findAll();
 
-    void removeQuote(Quote quote);
+    boolean removeQuote(long quoteId);
 }

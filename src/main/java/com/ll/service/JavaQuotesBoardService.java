@@ -8,9 +8,10 @@ import java.util.Scanner;
 
 public class JavaQuotesBoardService {
 
-    private static final String CMD_EXIT = "종료";
-    private static final String CMD_INSERT = "등록";
-    private static final String CMD_LIST = "목록";
+    private static final String CMD_EXIT    = "종료";
+    private static final String CMD_INSERT  = "등록";
+    private static final String CMD_LIST    = "목록";
+    private static final String CMD_DELETE  = "삭제";
 
     private QuoteRepository repository;
     private Scanner sc = new Scanner(System.in);
@@ -44,6 +45,8 @@ public class JavaQuotesBoardService {
             InsertQuote();
         }else if(command.equals(CMD_LIST)){
             printQuoteList();
+        }else if(command.startsWith(CMD_DELETE)){
+            deleteQuote(command);
         }
 
         return true;
@@ -66,5 +69,19 @@ public class JavaQuotesBoardService {
 
         long quoteId = repository.addQuote(quote);
         System.out.println(quoteId + "번 명언이 등록되었습니다.");
+    }
+
+    public void deleteQuote(String command){
+
+        // TODO : command -> Param Map 으로 변환하는 메서드 추가하기
+        int boundaryIndex = command.indexOf("?");
+        String param = command.substring(boundaryIndex);
+        long deleteId = Long.parseLong(param.split("=")[1]);
+
+        if(repository.removeQuote(deleteId)){
+            System.out.println(deleteId + "번 명언이 삭제되었습니다.");
+        }else{
+            System.out.println(deleteId + "번 명언은 존재하지 않습니다.");
+        }
     }
 }
