@@ -10,9 +10,18 @@ public class JavaQuotesBoardService {
 
     private static final String CMD_EXIT = "종료";
     private static final String CMD_INSERT = "등록";
+    private static final String CMD_LIST = "목록";
 
-    private QuoteRepository repository = new MemoryQuoteRepository();
+    private QuoteRepository repository;
     private Scanner sc = new Scanner(System.in);
+
+    public JavaQuotesBoardService() {
+        repository = new MemoryQuoteRepository();
+    }
+
+    public JavaQuotesBoardService(QuoteRepository repository) {
+        this.repository = repository;
+    }
 
     public void start() {
 
@@ -33,9 +42,18 @@ public class JavaQuotesBoardService {
             return false;
         }else if(command.equals(CMD_INSERT)){
             InsertQuote();
+        }else if(command.equals(CMD_LIST)){
+            printQuoteList();
         }
 
         return true;
+    }
+
+    public void printQuoteList() {
+        System.out.println("번호 / 작가 / 명언");
+        System.out.println("------------------");
+        repository.findAll().forEach(quote ->
+                        System.out.println(quote.getId() + " / " + quote.getAuthor() + " / " + quote.getWiseSaying()));
     }
 
     private void InsertQuote(){
@@ -46,6 +64,7 @@ public class JavaQuotesBoardService {
         System.out.print("작가 : ");
         quote.setAuthor(sc.nextLine());
 
-        repository.addQuote(quote);
+        long quoteId = repository.addQuote(quote);
+        System.out.println(quoteId + "번 명언이 등록되었습니다.");
     }
 }

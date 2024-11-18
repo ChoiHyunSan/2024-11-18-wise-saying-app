@@ -2,15 +2,28 @@ package com.ll.repository;
 
 import com.ll.domain.Quote;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class QuoteRepositoryTest {
     QuoteRepository quoteRepository = new MemoryQuoteRepository();
 
+    @BeforeEach
+    void before(){
+        Quote quote3 = new Quote();
+        quote3.setAuthor("작가3");
+        quote3.setWiseSaying("명언3");
+
+        Quote quote4 = new Quote();
+        quote4.setAuthor("작가4");
+        quote4.setWiseSaying("명언4");
+
+        long id1 = quoteRepository.addQuote(quote3);
+        long id2 = quoteRepository.addQuote(quote4);
+    }
+
     @Test
-    void 명언_추가하고_조회하기(){
+    void 명언_추가하고_조회하기_약식테스트(){
         Quote quote1 = new Quote();
         quote1.setAuthor("작가1");
         quote1.setWiseSaying("명언1");
@@ -32,5 +45,11 @@ public class QuoteRepositoryTest {
         Assertions.assertEquals("작가2", findQuote2.getAuthor());
         Assertions.assertEquals("명언1", findQuote1.getWiseSaying());
         Assertions.assertEquals("명언2", findQuote2.getWiseSaying());
+    }
+
+    @Test
+    void 명언리스트_출력(){
+        quoteRepository.findAll();
+
     }
 }

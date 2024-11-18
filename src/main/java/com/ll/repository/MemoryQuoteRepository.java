@@ -2,9 +2,7 @@ package com.ll.repository;
 
 import com.ll.domain.Quote;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MemoryQuoteRepository implements QuoteRepository{
 
@@ -13,7 +11,9 @@ public class MemoryQuoteRepository implements QuoteRepository{
 
     @Override
     public long addQuote(Quote quote) {
+        quote.setId(uniqueNum);
         quoteMap.put(uniqueNum, quote);
+
         return uniqueNum++;
     }
 
@@ -23,18 +23,22 @@ public class MemoryQuoteRepository implements QuoteRepository{
     }
 
     @Override
+    public List<Quote> findAll() {
+        return new ArrayList<>(quoteMap.values());
+    }
+
+    @Override
     public Optional<Quote> searchByAuthor(String author) {
-        for(Quote quote : quoteMap.values()){
-            if(quote.getAuthor().equals(author)){
-                return Optional.of(quote);
-            }
-        }
-        return Optional.empty();
+        return quoteMap.values().stream()
+                .filter(quote -> quote.getAuthor().equals(author))
+                .findFirst();
     }
 
     @Override
     public Optional<Quote> searchByWiseSaying(String piece) {
-        return Optional.empty();
+        return quoteMap.values().stream()
+                .filter(quote -> quote.getWiseSaying().contains(piece))
+                .findFirst();
     }
 
     @Override
