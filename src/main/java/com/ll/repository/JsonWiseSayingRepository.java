@@ -6,6 +6,7 @@ import com.ll.domain.WiseSaying;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,12 +20,30 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
 
     private static final Path BASE_PATH = Paths.get("").toAbsolutePath().resolve("db").resolve("wiseSaying");
     private static final Path LAST_ID_FILE = BASE_PATH.resolve("lastId.txt");
-    private static final Path DATA_FILE = BASE_PATH.resolve("data.json");
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     private long uniqueNum = 1;
 
-    public JsonWiseSayingRepository() {
+    @Override
+    public List<WiseSaying> searchByAuthor(String author) {
+        return findAll().stream()
+                .filter(ws -> ws.getAuthor().contains(author))
+                .toList();
+    }
+
+    @Override
+    public List<WiseSaying> searchByContent(String content) {
+        return findAll().stream()
+                .filter(ws -> ws.getContent().contains(content))
+                .toList();
+    }
+
+    public JsonWiseSayingRepository(boolean clearFlag) {
+
+        if(clearFlag){
+            clear();
+        }
+
         try {
             File lastIdFile = LAST_ID_FILE.toFile();
 
@@ -37,15 +56,15 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
                 uniqueNum = lastId + 1;
             }
         } catch (IOException e) {
-            System.err.println("Failed to initialize uniqueNum: " + e.getMessage());
+            e.printStackTrace();
             // 에러가 발생해도 기본값 1을 사용
             uniqueNum = 1;
         }
     }
 
     @Override
-    public long addWiseSaying(WiseSaying quote) {
-        quote.setId(uniqueNum);
+    public long addWiseSaying(WiseSaying wiseSaying) {
+        wiseSaying.setId(uniqueNum);
 
         try{
             File directory = BASE_PATH.toFile();
@@ -53,10 +72,10 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
                 directory.mkdirs();
             }
 
-            Path quoteFile = BASE_PATH.resolve(quote.getId() + ".json");
-            objectMapper.writeValue(quoteFile.toFile(), quote);
+            Path quoteFile = BASE_PATH.resolve(wiseSaying.getId() + ".json");
+            objectMapper.writeValue(quoteFile.toFile(), wiseSaying);
 
-            Files.writeString(LAST_ID_FILE, String.valueOf(quote.getId()));
+            Files.writeString(LAST_ID_FILE, String.valueOf(wiseSaying.getId()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +105,7 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
     @Override
     public List<WiseSaying> findAll() {
 
-        List<WiseSaying> ququoteList = new ArrayList<>();
+        List<WiseSaying> wiseSayingList = new ArrayList<>();
         File directory = BASE_PATH.toFile();
 
         File[] jsonFiles = directory.listFiles((dir, name) ->
@@ -96,28 +115,27 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
             for (File file : jsonFiles) {
                 try {
                     WiseSaying quote = objectMapper.readValue(file, WiseSaying.class);
-                    ququoteList.add(quote);
+                    wiseSayingList.add(quote);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        return ququoteList;
+        return wiseSayingList;
     }
 
     @Override
-    public boolean removeWiseSaying(long quoteId) {
+    public boolean removeWiseSaying(long wiseSayingId) {
 
         try {
-            Path quoteFile = BASE_PATH.resolve(quoteId + ".json");
-            File file = quoteFile.toFile();
+            Path wiseSayingFile = BASE_PATH.resolve(wiseSayingId + ".json");
+            File file = wiseSayingFile.toFile();
 
             if (!file.exists()) {
                 return false;  // 파일 없음
             }
-            boolean deleted = Files.deleteIfExists(quoteFile);
-            return deleted;
+            return Files.deleteIfExists(wiseSayingFile);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -127,20 +145,31 @@ public class JsonWiseSayingRepository implements WiseSayingRepository {
 
     private WiseSaying loadWiseSaying(long id) {
         try {
-            Path quoteFile = BASE_PATH.resolve(id + ".json");
+            Path wsFile = BASE_PATH.resolve(id + ".json");
 
-            if (!quoteFile.toFile().exists()) {
+            if (!wsFile.toFile().exists()) {
                 return null;
             }
 
-            return objectMapper.readValue(quoteFile.toFile(), WiseSaying.class);
+            return objectMapper.readValue(wsFile.toFile(), WiseSaying.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private void buildWiseSaying(){
-
+    @Override
+    public void clear() {
+        try {
+            if (Files.exists(BASE_PATH) && Files.isDirectory(BASE_PATH)) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(BASE_PATH)) {
+                    for (Path entry : stream) {
+                        Files.delete(entry);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // 예외 처리
+        }
     }
 }

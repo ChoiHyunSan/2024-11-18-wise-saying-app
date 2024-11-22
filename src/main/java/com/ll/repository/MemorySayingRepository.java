@@ -6,41 +6,60 @@ import java.util.*;
 
 public class MemorySayingRepository implements WiseSayingRepository {
 
-    private final Map<Long, WiseSaying> quoteMap = new HashMap<>();
+    private final Map<Long, WiseSaying> wiseSayingMap = new HashMap<>();
     private long uniqueNum = 1;
 
     @Override
-    public long addWiseSaying(WiseSaying quote) {
-        quote.setId(uniqueNum);
-        quoteMap.put(uniqueNum, quote);
+    public long addWiseSaying(WiseSaying wiseSaying) {
+        wiseSaying.setId(uniqueNum);
+        wiseSayingMap.put(uniqueNum, wiseSaying);
 
         return uniqueNum++;
     }
 
     @Override
     public Optional<WiseSaying> searchById(long id) {
-        return Optional.ofNullable(quoteMap.get(id));
+        return Optional.ofNullable(wiseSayingMap.get(id));
     }
 
     @Override
     public List<WiseSaying> findAll() {
-        return new ArrayList<>(quoteMap.values());
+        return new ArrayList<>(wiseSayingMap.values());
     }
 
     @Override
-    public boolean removeWiseSaying(long quoteId) {
-        if(quoteMap.get(quoteId) != null){
-            quoteMap.remove(quoteId);
+    public boolean removeWiseSaying(long wiseSayingId) {
+        if(wiseSayingMap.get(wiseSayingId) != null){
+            wiseSayingMap.remove(wiseSayingId);
             return true;
         }
         return false;
     }
 
     @Override
-    public void updateWiseSaying(WiseSaying quote) {
-        if(quoteMap.get(quote.getId()) == null)
+    public void updateWiseSaying(WiseSaying wiseSaying) {
+        if(wiseSayingMap.get(wiseSaying.getId()) == null)
             return;
 
-        quoteMap.put(quote.getId(), quote);
+        wiseSayingMap.put(wiseSaying.getId(), wiseSaying);
+    }
+
+    @Override
+    public List<WiseSaying> searchByAuthor(String author) {
+        return findAll().stream()
+                .filter(ws -> ws.getAuthor().contains(author))
+                .toList();
+    }
+
+    @Override
+    public void clear() {
+        wiseSayingMap.clear();
+    }
+
+    @Override
+    public List<WiseSaying> searchByContent(String content) {
+        return findAll().stream()
+                .filter(ws -> ws.getContent().contains(content))
+                .toList();
     }
 }
