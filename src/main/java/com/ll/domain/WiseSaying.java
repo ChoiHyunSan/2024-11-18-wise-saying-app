@@ -2,7 +2,7 @@ package com.ll.domain;
 
 import java.util.Objects;
 
-public class Quote {
+public class WiseSaying {
 
     private Long id;
     private String content;
@@ -36,7 +36,7 @@ public class Quote {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Quote quote = (Quote) o;
+        WiseSaying quote = (WiseSaying) o;
         return Objects.equals(getId(), quote.getId()) && Objects.equals(getContent(), quote.getContent()) && Objects.equals(getAuthor(), quote.getAuthor());
     }
 

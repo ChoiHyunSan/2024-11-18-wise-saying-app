@@ -1,16 +1,16 @@
 package com.ll.repository;
 
-import com.ll.domain.Quote;
+import com.ll.domain.WiseSaying;
 
 import java.util.*;
 
-public class MemoryQuoteRepository implements QuoteRepository{
+public class MemorySayingRepository implements WiseSayingRepository {
 
-    private final Map<Long, Quote> quoteMap = new HashMap<>();
+    private final Map<Long, WiseSaying> quoteMap = new HashMap<>();
     private long uniqueNum = 1;
 
     @Override
-    public long addQuote(Quote quote) {
+    public long addWiseSaying(WiseSaying quote) {
         quote.setId(uniqueNum);
         quoteMap.put(uniqueNum, quote);
 
@@ -18,17 +18,17 @@ public class MemoryQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public Optional<Quote> searchById(long id) {
+    public Optional<WiseSaying> searchById(long id) {
         return Optional.ofNullable(quoteMap.get(id));
     }
 
     @Override
-    public List<Quote> findAll() {
+    public List<WiseSaying> findAll() {
         return new ArrayList<>(quoteMap.values());
     }
 
     @Override
-    public boolean removeQuote(long quoteId) {
+    public boolean removeWiseSaying(long quoteId) {
         if(quoteMap.get(quoteId) != null){
             quoteMap.remove(quoteId);
             return true;
@@ -37,7 +37,7 @@ public class MemoryQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public void updateQuote(Quote quote) {
+    public void updateWiseSaying(WiseSaying quote) {
         if(quoteMap.get(quote.getId()) == null)
             return;
 

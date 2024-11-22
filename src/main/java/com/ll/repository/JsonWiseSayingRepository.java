@@ -2,7 +2,7 @@ package com.ll.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.ll.domain.Quote;
+import com.ll.domain.WiseSaying;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,22 +15,36 @@ import java.util.Optional;
 
 
 // 파일 메서드 공부하기.. 거의 기억이 안남
-public class JsonQuoteRepository implements QuoteRepository{
+public class JsonWiseSayingRepository implements WiseSayingRepository {
 
-    private static final Path BASE_PATH = Paths.get("").toAbsolutePath()
-            .resolve("db").resolve("wiseSaying");
-
+    private static final Path BASE_PATH = Paths.get("").toAbsolutePath().resolve("db").resolve("wiseSaying");
     private static final Path LAST_ID_FILE = BASE_PATH.resolve("lastId.txt");
-    private long uniqueNum = 1;
+    private static final Path DATA_FILE = BASE_PATH.resolve("data.json");
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+    private long uniqueNum = 1;
 
-    public JsonQuoteRepository() {
-        System.out.println(BASE_PATH);
+    public JsonWiseSayingRepository() {
+        try {
+            File lastIdFile = LAST_ID_FILE.toFile();
+
+            // BASE_PATH 디렉토리가 없으면 생성
+            Files.createDirectories(BASE_PATH);
+
+            if (lastIdFile.exists()) {
+                // lastId.json 파일이 존재하면 값을 읽어옴
+                Long lastId = objectMapper.readValue(lastIdFile, Long.class);
+                uniqueNum = lastId + 1;
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to initialize uniqueNum: " + e.getMessage());
+            // 에러가 발생해도 기본값 1을 사용
+            uniqueNum = 1;
+        }
     }
 
     @Override
-    public long addQuote(Quote quote) {
+    public long addWiseSaying(WiseSaying quote) {
         quote.setId(uniqueNum);
 
         try{
@@ -51,7 +65,7 @@ public class JsonQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public void updateQuote(Quote quote) {
+    public void updateWiseSaying(WiseSaying quote) {
         Path wiseSayingFile = BASE_PATH.resolve( quote.getId() + ".json");
         if(!wiseSayingFile.toFile().exists()){
             return;
@@ -65,14 +79,14 @@ public class JsonQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public Optional<Quote> searchById(long id) {
-        return Optional.ofNullable(loadQuote(id));
+    public Optional<WiseSaying> searchById(long id) {
+        return Optional.ofNullable(loadWiseSaying(id));
     }
 
     @Override
-    public List<Quote> findAll() {
+    public List<WiseSaying> findAll() {
 
-        List<Quote> ququoteList = new ArrayList<>();
+        List<WiseSaying> ququoteList = new ArrayList<>();
         File directory = BASE_PATH.toFile();
 
         File[] jsonFiles = directory.listFiles((dir, name) ->
@@ -81,7 +95,7 @@ public class JsonQuoteRepository implements QuoteRepository{
         if (jsonFiles != null) {
             for (File file : jsonFiles) {
                 try {
-                    Quote quote = objectMapper.readValue(file, Quote.class);
+                    WiseSaying quote = objectMapper.readValue(file, WiseSaying.class);
                     ququoteList.add(quote);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -93,7 +107,7 @@ public class JsonQuoteRepository implements QuoteRepository{
     }
 
     @Override
-    public boolean removeQuote(long quoteId) {
+    public boolean removeWiseSaying(long quoteId) {
 
         try {
             Path quoteFile = BASE_PATH.resolve(quoteId + ".json");
@@ -103,9 +117,6 @@ public class JsonQuoteRepository implements QuoteRepository{
                 return false;  // 파일 없음
             }
             boolean deleted = Files.deleteIfExists(quoteFile);
-
-            // TODO : 마지막 index에 대한 파일 갱신도 필요할 듯
-
             return deleted;
 
         } catch (IOException e) {
@@ -114,7 +125,7 @@ public class JsonQuoteRepository implements QuoteRepository{
         }
     }
 
-    private Quote loadQuote(long id) {
+    private WiseSaying loadWiseSaying(long id) {
         try {
             Path quoteFile = BASE_PATH.resolve(id + ".json");
 
@@ -122,10 +133,14 @@ public class JsonQuoteRepository implements QuoteRepository{
                 return null;
             }
 
-            return objectMapper.readValue(quoteFile.toFile(), Quote.class);
+            return objectMapper.readValue(quoteFile.toFile(), WiseSaying.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private void buildWiseSaying(){
+
     }
 }
